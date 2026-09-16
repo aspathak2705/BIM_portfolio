@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-dark: #050505;
+    --bg-surface: #080808;
+    --bg-card: #0D0D0D;
+    --text-main: #F5F5F2;
+    --text-muted: #9A9A9A;
+    --accent-orange: #FF6A00;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: #FF6A00;
+    color: #050505;
+  }
+}
+
+/* Technical Grid Pattern */
+.bg-tech-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.bg-tech-dots {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1A1A1A;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF6A00;
+}
+
+/* Subtle glowing accent */
+.orange-glow-sm {
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.15);
+}
+
+.orange-glow-md {
+  box-shadow: 0 0 35px rgba(255, 106, 0, 0.25);
+}
+
+.border-accent-pulse {
+  border-color: rgba(255, 106, 0, 0.4);
+  transition: border-color 0.3s ease;
+}
+
+.border-accent-pulse:hover {
+  border-color: rgba(255, 106, 0, 1);
+}
