@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send, MessageSquare, Upload } from "lucide-react";
+import { Mail, Phone, MapPin, Send, MessageSquare, Upload, Loader2, AlertCircle } from "lucide-react";
 import { siteConfig } from "@/data/site";
 
 export function ContactIntake() {
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -16,9 +19,35 @@ export function ContactIntake() {
     brief: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitted(true);
+      } else {
+        setErrorMessage(
+          data.error || "Something went wrong. Please try again or contact us directly on WhatsApp."
+        );
+      }
+    } catch (err) {
+      console.error("Network or submission error:", err);
+      setErrorMessage("Something went wrong. Please try again or contact us directly on WhatsApp.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -106,21 +135,28 @@ export function ContactIntake() {
           {/* Right Column: Intake Form */}
           <div className="lg:col-span-7 bg-[#080808] border border-[#1A1A1A] p-8 sm:p-10 space-y-6">
             <h3 className="font-mono text-xl font-bold text-[#F5F5F2] uppercase border-b border-[#1A1A1A] pb-4">
-              PROJECT REQUIRMENT INTAKE
+              PROJECT REQUIREMENT INTAKE
             </h3>
 
             {submitted ? (
               <div className="p-8 bg-[#0D0D0D] border border-[#FF6A00] text-center space-y-4">
                 <Send className="w-10 h-10 text-[#FF6A00] mx-auto" />
                 <h4 className="font-mono text-lg font-bold text-[#F5F5F2] uppercase">
-                  INQUIRY SUBMITTED SUCCESSFULLY
+                  REQUEST RECEIVED
                 </h4>
-                <p className="text-xs text-[#9A9A9A] font-mono">
-                  Thank you. Er. Pawan G. Patil and team will review your project brief and respond shortly.
+                <p className="text-xs text-[#9A9A9A] font-mono leading-relaxed">
+                  Thank you. Er. Pawan G. Patil and team have received your project brief and will review your specifications shortly.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6 font-mono text-xs">
+                {errorMessage && (
+                  <div className="p-4 bg-red-950/40 border border-red-500/50 text-red-200 flex items-start space-x-3">
+                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[#9A9A9A] block uppercase">NAME *</label>
@@ -227,10 +263,20 @@ export function ContactIntake() {
 
                 <button
                   type="submit"
-                  className="w-full flex items-center justify-center space-x-2 font-mono text-xs tracking-widest uppercase px-6 py-4 bg-[#FF6A00] text-[#050505] font-bold hover:bg-[#CC5500] transition-colors"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center space-x-2 font-mono text-xs tracking-widest uppercase px-6 py-4 bg-[#FF6A00] text-[#050505] font-bold hover:bg-[#CC5500] transition-colors disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>REQUEST A QUOTATION</span>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>SUBMITTING ENQUIRY...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>REQUEST A QUOTATION</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

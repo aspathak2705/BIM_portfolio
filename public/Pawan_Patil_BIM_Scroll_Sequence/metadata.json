@@ -1,0 +1,12 @@
+{
+  "source_video": "Create_an_ultra_premium_cinema.mp4",
+  "fps": 24.0,
+  "total_frames": 240,
+  "width": 1280,
+  "height": 720,
+  "duration_seconds": 10.0,
+  "frame_format": "WebP",
+  "webp_quality": 90,
+  "extraction": "every source frame",
+  "recommended_rendering": "Canvas image sequence controlled by scroll position"
+}
